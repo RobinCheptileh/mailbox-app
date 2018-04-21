@@ -34,13 +34,13 @@ public class MainActivity extends AppCompatActivity {
     GoogleAccountCredential mCredential;
     SharedPreferences sharedPref;
 
-    public static final String[] SCOPES = {GmailScopes.GMAIL_LABELS};
+    public static final String[] SCOPES = {GmailScopes.MAIL_GOOGLE_COM};
     public static final String PREF_ACCOUNT_NAME = "accountName";
 
-    static final int REQUEST_ACCOUNT_PICKER = 1000;
-    static final int REQUEST_AUTHORIZATION = 1001;
-    static final int REQUEST_GOOGLE_PLAY_SERVICES = 1002;
-    static final int REQUEST_PERMISSION_GET_ACCOUNTS = 1003;
+    public static final int REQUEST_ACCOUNT_PICKER = 1000;
+    public static final int REQUEST_AUTHORIZATION = 1001;
+    public static final int REQUEST_GOOGLE_PLAY_SERVICES = 1002;
+    public static final int REQUEST_PERMISSION_GET_ACCOUNTS = 1003;
 
     @Override
     protected void onStart() {
@@ -100,13 +100,15 @@ public class MainActivity extends AppCompatActivity {
                 if (resultCode != RESULT_OK) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
                     builder.setMessage(R.string.this_app_requires_google_play_services);
-                    builder.setPositiveButton(getString(android.R.string.ok), new DialogInterface.OnClickListener() {
+                    builder.setPositiveButton(getString(android.R.string.cancel), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.dismiss();
                             ActivityCompat.finishAffinity(MainActivity.this);
                         }
                     });
+                    AlertDialog dialog =builder.create();
+                    dialog.show();
                 } else {
                     chooseAccount();
                 }

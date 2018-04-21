@@ -1,8 +1,17 @@
 package com.cognition.android.mailboxapp.utils;
 
 import android.content.Context;
+import android.content.res.TypedArray;
+import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.support.design.widget.Snackbar;
+import android.text.format.DateFormat;
+import android.view.View;
+
+import java.util.Calendar;
+import java.util.Locale;
+import java.util.Random;
 
 public class Utils {
 
@@ -21,9 +30,44 @@ public class Utils {
      *
      * @return true if the device has a network connection, false otherwise.
      */
-    private boolean isDeviceOnline() {
+    public boolean isDeviceOnline() {
         ConnectivityManager connMgr = (ConnectivityManager) this.mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
         return (networkInfo != null && networkInfo.isConnected());
+    }
+
+    /**
+     * Display messages on the snackbar
+     *
+     * @param message String
+     */
+    public void showSnackbar(View view, String message) {
+        Snackbar.make(view, message, Snackbar.LENGTH_LONG).show();
+    }
+
+    /**
+     * Get a random material color
+     *
+     * @return int
+     */
+    public int getRandomMaterialColor() {
+        int returnColor = Color.GRAY;
+        int arrayId = mContext.getResources().getIdentifier("material_colors", "array", mContext.getPackageName());
+
+        if (arrayId != 0) {
+            TypedArray colors = mContext.getResources().obtainTypedArray(arrayId);
+
+            Random random = new Random();
+            int index = random.nextInt(colors.length());
+            returnColor = colors.getColor(index, Color.GRAY);
+            colors.recycle();
+        }
+        return returnColor;
+    }
+
+    public String timestampToDate(long time) {
+        Calendar cal = Calendar.getInstance(Locale.ENGLISH);
+        cal.setTimeInMillis(time * 1000);
+        return DateFormat.format("dd/MM/yyyy", cal).toString();
     }
 }
