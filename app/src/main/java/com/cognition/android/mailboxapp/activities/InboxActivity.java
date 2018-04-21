@@ -132,7 +132,10 @@ public class InboxActivity extends AppCompatActivity {
         switch (requestCode) {
             case REQUEST_AUTHORIZATION:
                 if (resultCode == RESULT_OK) {
-                    getMessagesFromDB();
+                    if (!isFetching && mUtils.isDeviceOnline()) {
+                        getMessagesFromDB();
+                    } else
+                        mUtils.showSnackbar(lytParent, getString(R.string.device_is_offline));
                 } else {
                     AlertDialog.Builder builder = new AlertDialog.Builder(InboxActivity.this);
                     builder.setMessage(R.string.app_requires_auth);
@@ -202,7 +205,7 @@ public class InboxActivity extends AppCompatActivity {
         refreshMessages.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                if (mUtils.isDeviceOnline()) {
+                if (!isFetching && mUtils.isDeviceOnline()) {
                     getMessagesFromDB();
                 } else
                     mUtils.showSnackbar(lytParent, getString(R.string.device_is_offline));
@@ -215,7 +218,7 @@ public class InboxActivity extends AppCompatActivity {
         listMessages.addOnScrollListener(new EndlessRecyclerViewScrollListener((LinearLayoutManager) mLayoutManager) {
             @Override
             public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
-                if (!isFetching)
+                if (!isFetching && mUtils.isDeviceOnline())
                     new GetEmailsTask(false).execute();
             }
         });
@@ -316,7 +319,8 @@ public class InboxActivity extends AppCompatActivity {
                             headers,
                             actualMessage.getPayload().getParts(),
                             actualMessage.getInternalDate(),
-                            InboxActivity.this.mUtils.getRandomMaterialColor()
+                            InboxActivity.this.mUtils.getRandomMaterialColor(),
+                            actualMessage.getPayload()
                     );
 
                     newMessage.save();

@@ -23,6 +23,7 @@ public class Message extends BaseModel {
     private String snippet;
     private String mimetype;
     private String headersJson;
+    private String parentPartJson;
     private String partsJson;
     private String from;
     private String subject;
@@ -34,18 +35,21 @@ public class Message extends BaseModel {
     @ColumnIgnore
     private Map<String, String> headers;
     @ColumnIgnore
+    private MessagePart parentPart;
+    @ColumnIgnore
     private List<MessagePart> parts;
 
     public Message() {
     }
 
-    public Message(List<String> labels, String snippet, String mimetype, Map<String, String> headers, List<MessagePart> parts, long timestamp, int color) throws JSONException {
+    public Message(List<String> labels, String snippet, String mimetype, Map<String, String> headers, List<MessagePart> parts, long timestamp, int color, MessagePart parentPart) throws JSONException {
         this.labels = labels;
         this.snippet = snippet;
         this.mimetype = mimetype;
         this.headers = headers;
         this.parts = parts;
         this.timestamp = timestamp;
+        this.parentPart = parentPart;
 
         this.from = this.headers.get("From");
         this.subject = this.headers.get("Subject");
@@ -71,6 +75,9 @@ public class Message extends BaseModel {
                 partsArr.put(messagePart.toString());
             this.partsJson = partsArr.toString();
         }
+
+        if (this.parentPart != null)
+            this.parentPartJson = parentPart.toString();
     }
 
     public int getId() {
@@ -183,5 +190,21 @@ public class Message extends BaseModel {
 
     public void setPartsJson(String partsJson) {
         this.partsJson = partsJson;
+    }
+
+    public MessagePart getParentPart() {
+        return parentPart;
+    }
+
+    public void setParentPart(MessagePart parentPart) {
+        this.parentPart = parentPart;
+    }
+
+    public String getParentPartJson() {
+        return parentPartJson;
+    }
+
+    public void setParentPartJson(String parentPartJson) {
+        this.parentPartJson = parentPartJson;
     }
 }

@@ -1,6 +1,7 @@
 package com.cognition.android.mailboxapp.utils;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.AppCompatTextView;
@@ -13,6 +14,7 @@ import android.widget.Filter;
 import android.widget.Filterable;
 
 import com.cognition.android.mailboxapp.R;
+import com.cognition.android.mailboxapp.activities.EmailActivity;
 import com.cognition.android.mailboxapp.models.Message;
 
 import java.util.ArrayList;
@@ -71,7 +73,12 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Messag
         holder.lytItemParent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mUtils.showSnackbar(MessagesAdapter.this.parent, message.getMimetype());
+                if (mUtils.isDeviceOnline()) {
+                    Intent intent = new Intent(mContext, EmailActivity.class);
+                    intent.putExtra("messageId", message.getId());
+                    mContext.startActivity(intent);
+                } else
+                    mUtils.showSnackbar(parent, mContext.getString(R.string.device_is_offline));
             }
         });
 

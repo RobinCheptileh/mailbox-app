@@ -12,4 +12,7 @@
     <string name="snippet">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam. Sed nisi. Nulla quis sem at nibh elementum imperdiet. Duis sagittis ipsum. Praesent mauris. Fusce nec tellus sed augue semper porta. Mauris massa. Vestibulum lacinia arcu eget nulla.</string>
     <string name="app_requires_auth">This app requires your authorization to access your gmail account so that it can work.</string>
     <string name="device_is_offline">Device is offline</string>
+    <string name="to_me">to me</string>
+    <string name="an_error_occurred">An error occurred.</string>
+    <string name="retry">Retry</string>
 </resources>
