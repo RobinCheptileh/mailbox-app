@@ -25,8 +25,10 @@ public class InboxActivity extends AppCompatActivity {
     SharedPreferences sharedPref;
 
     @Override
-    protected void onStart() {
-        super.onStart();
+    protected void onCreate(Bundle savedInstanceState) {
+        setTheme(R.style.AppTheme);
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_inbox);
 
         // Initialize credentials and service object.
         mCredential = GoogleAccountCredential.usingOAuth2(
@@ -41,15 +43,8 @@ public class InboxActivity extends AppCompatActivity {
             startActivity(new Intent(InboxActivity.this, MainActivity.class));
             ActivityCompat.finishAffinity(InboxActivity.this);
         }
-    }
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        setTheme(R.style.AppTheme);
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_inbox);
 
         txtAccountName = findViewById(R.id.txtAccountName);
-        txtAccountName.setText(mCredential.getSelectedAccount().name);
+        txtAccountName.setText(mCredential.getSelectedAccountName());
     }
 }
