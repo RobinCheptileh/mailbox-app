@@ -26,6 +26,7 @@ import android.view.View;
 
 import com.cognition.android.mailboxapp.R;
 import com.cognition.android.mailboxapp.models.Message;
+import com.cognition.android.mailboxapp.utils.EndlessRecyclerViewScrollListener;
 import com.cognition.android.mailboxapp.utils.MessagesAdapter;
 import com.cognition.android.mailboxapp.utils.Utils;
 import com.google.android.gms.common.GoogleApiAvailability;
@@ -74,6 +75,7 @@ public class InboxActivity extends AppCompatActivity {
     Utils mUtils;
 
     String pageToken = null;
+    boolean isFetching = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -207,10 +209,17 @@ public class InboxActivity extends AppCompatActivity {
             }
         });
 
-        listMessages.setAdapter(messagesAdapter);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(InboxActivity.this);
         listMessages.setLayoutManager(mLayoutManager);
         listMessages.setItemAnimator(new DefaultItemAnimator());
+        listMessages.addOnScrollListener(new EndlessRecyclerViewScrollListener((LinearLayoutManager) mLayoutManager) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+                if (!isFetching)
+                    new GetEmailsTask(false).execute();
+            }
+        });
+        listMessages.setAdapter(messagesAdapter);
 
         fabCompose.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -269,12 +278,13 @@ public class InboxActivity extends AppCompatActivity {
 
         @Override
         protected List<Message> doInBackground(Void... voids) {
+            isFetching = true;
+            List<Message> messageListReceived = null;
+
             if (clear) {
                 Delete.table(Message.class);
                 InboxActivity.this.pageToken = null;
             }
-
-            List<Message> messageListReceived = null;
 
             try {
                 runOnUiThread(new Runnable() {
@@ -285,7 +295,7 @@ public class InboxActivity extends AppCompatActivity {
                 });
                 String user = "me";
                 String query = "in:inbox";
-                ListMessagesResponse messageResponse = mService.users().messages().list(user).setQ(query).setMaxResults(12L).setPageToken(InboxActivity.this.pageToken).execute();
+                ListMessagesResponse messageResponse = mService.users().messages().list(user).setQ(query).setMaxResults(20L).setPageToken(InboxActivity.this.pageToken).execute();
                 InboxActivity.this.pageToken = messageResponse.getNextPageToken();
 
                 messageListReceived = new ArrayList<>();
@@ -325,6 +335,8 @@ public class InboxActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(List<Message> output) {
+            isFetching = false;
+
             if (output != null && output.size() != 0) {
                 if (clear) {
                     InboxActivity.this.messageList.clear();
@@ -355,6 +367,8 @@ public class InboxActivity extends AppCompatActivity {
 
         @Override
         protected void onCancelled() {
+            isFetching = false;
+
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
