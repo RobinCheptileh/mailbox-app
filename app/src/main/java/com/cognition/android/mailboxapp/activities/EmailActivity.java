@@ -1,7 +1,9 @@
 package com.cognition.android.mailboxapp.activities;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.net.Uri;
+import android.net.http.SslError;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
@@ -14,8 +16,10 @@ import android.support.v7.widget.LinearLayoutCompat;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.webkit.SslErrorHandler;
 import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
+import android.webkit.WebResourceResponse;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -67,6 +71,7 @@ public class EmailActivity extends AppCompatActivity {
             onBackPressed();
     }
 
+    @SuppressLint("SetJavaScriptEnabled")
     private void initViews() {
         lytParent = findViewById(R.id.lytParent);
         toolbar = findViewById(R.id.toolbar);
@@ -98,20 +103,15 @@ public class EmailActivity extends AppCompatActivity {
         gradientDrawable.setColor(mMessage.getColor());
 
         WebSettings myWebSettings = myWebView.getSettings();
-        myWebSettings.setJavaScriptEnabled(false);
-        myWebSettings.setLoadWithOverviewMode(false);
-        myWebSettings.setUseWideViewPort(false);
+        myWebSettings.setJavaScriptEnabled(true);
+        myWebSettings.setUseWideViewPort(true);
         myWebSettings.setSupportZoom(true);
-        myWebSettings.setBuiltInZoomControls(false);
+        myWebSettings.setBuiltInZoomControls(true);
+        myWebSettings.setDisplayZoomControls(false);
         myWebSettings.setCacheMode(WebSettings.LOAD_DEFAULT);
         myWebSettings.setDomStorageEnabled(true);
         myWebView.setScrollBarStyle(WebView.SCROLLBARS_OUTSIDE_OVERLAY);
         myWebView.setScrollbarFadingEnabled(true);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            myWebView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
-        } else {
-            myWebView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
-        }
         myWebView.setWebViewClient(new WebViewClient() {
 
             @Override
@@ -147,6 +147,28 @@ public class EmailActivity extends AppCompatActivity {
                 myWebView.setVisibility(View.GONE);
                 lytError.setVisibility(View.VISIBLE);
                 avLoadingIndicatorView.smoothToHide();
+            }
+
+            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+            @Override
+            public void onReceivedHttpError(WebView view, WebResourceRequest request, WebResourceResponse response) {
+                super.onReceivedHttpError(view, request, response);
+
+                Log.e(MainActivity.TAG, String.format("code: %d\tdescription: %s\turl: %s", response.getStatusCode(), response.getReasonPhrase(), request.getUrl()));
+
+                TransitionManager.beginDelayedTransition(lytParent);
+                myWebView.setVisibility(View.GONE);
+                lytError.setVisibility(View.VISIBLE);
+                avLoadingIndicatorView.smoothToHide();
+            }
+
+            @Override
+            public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
+                super.onReceivedSslError(view, handler, error);
+                handler.proceed();
+
+                Log.e(MainActivity.TAG, error.toString());
+
             }
 
             @Override
