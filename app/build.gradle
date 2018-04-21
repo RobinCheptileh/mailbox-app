@@ -38,6 +38,21 @@ dependencies {
         exclude group: 'org.apache.httpcomponents'
     }
 
+    // DBFlow
+    annotationProcessor "com.github.Raizlabs.DBFlow:dbflow-processor:4.2.4"
+    implementation "com.github.Raizlabs.DBFlow:dbflow-core:4.2.4"
+    implementation "com.github.Raizlabs.DBFlow:dbflow:4.2.4"
+
+    // Glide
+    implementation 'com.github.bumptech.glide:glide:4.6.1'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.6.1'
+
+    // Loading Indicator
+    implementation 'com.wang.avi:library:2.1.3'
+
+    // Transitions
+    implementation 'com.andkulikov:transitionseverywhere:1.7.9'
+
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
