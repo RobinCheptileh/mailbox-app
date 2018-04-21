@@ -20,8 +20,8 @@
         android:paddingTop="16dp">
 
         <android.support.constraint.ConstraintLayout
-            android:layout_width="50dp"
             android:id="@+id/lytFromPreviewParent"
+            android:layout_width="50dp"
             android:layout_height="50dp"
             android:background="@drawable/circle_background">
 
@@ -67,7 +67,6 @@
                     android:singleLine="true"
                     android:text="@string/from"
                     android:textColor="@color/colorBlackText"
-                    android:textIsSelectable="true"
                     tools:ignore="RtlSymmetry" />
 
                 <android.support.v7.widget.AppCompatTextView
@@ -80,11 +79,9 @@
                     android:fontFamily="sans-serif-light"
                     android:gravity="end"
                     android:maxLines="1"
-                    android:scrollHorizontally="true"
                     android:singleLine="true"
                     android:text="@string/default_date"
                     android:textColor="@color/colorBlackText"
-                    android:textIsSelectable="true"
                     android:textSize="10sp"
                     tools:ignore="SmallSp" />
 
@@ -108,7 +105,6 @@
                     android:singleLine="true"
                     android:text="@string/subject"
                     android:textColor="@color/colorBlackText"
-                    android:textIsSelectable="true"
                     android:textSize="13sp" />
 
                 <android.support.v7.widget.AppCompatTextView
@@ -119,11 +115,9 @@
                     android:ellipsize="end"
                     android:fontFamily="sans-serif-light"
                     android:maxLines="2"
-                    android:scrollHorizontally="true"
                     android:singleLine="false"
                     android:text="@string/snippet"
                     android:textColor="@color/colorBlackText"
-                    android:textIsSelectable="true"
                     android:textSize="12sp" />
 
             </android.support.v7.widget.LinearLayoutCompat>
@@ -135,7 +129,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:alpha="0.12"
+        android:alpha="0.1"
         android:background="@android:color/black" />
 
 </android.support.v7.widget.LinearLayoutCompat>

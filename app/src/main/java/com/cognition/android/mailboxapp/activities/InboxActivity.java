@@ -71,7 +71,6 @@ public class InboxActivity extends AppCompatActivity {
     Utils mUtils;
 
     String pageToken = null;
-    int itemCount = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -196,7 +195,6 @@ public class InboxActivity extends AppCompatActivity {
             @Override
             public void onRefresh() {
                 InboxActivity.this.pageToken = null;
-                InboxActivity.this.itemCount = 0;
                 InboxActivity.this.messageList.clear();
                 new GetEmailsTask().execute();
             }
@@ -235,11 +233,9 @@ public class InboxActivity extends AppCompatActivity {
     @SuppressLint("StaticFieldLeak")
     private class GetEmailsTask extends AsyncTask<Void, Void, List<Message>> {
 
-        int messageCount;
         private Exception mLastError = null;
 
         GetEmailsTask() {
-            messageCount = 0;
         }
 
         @Override
@@ -250,7 +246,7 @@ public class InboxActivity extends AppCompatActivity {
                 InboxActivity.this.refreshMessages.setRefreshing(true);
                 String user = "me";
                 String query = "in:inbox";
-                ListMessagesResponse messageResponse = mService.users().messages().list(user).setQ(query).setMaxResults(6L).setPageToken(InboxActivity.this.pageToken).execute();
+                ListMessagesResponse messageResponse = mService.users().messages().list(user).setQ(query).setMaxResults(12L).setPageToken(InboxActivity.this.pageToken).execute();
                 InboxActivity.this.pageToken = messageResponse.getNextPageToken();
 
                 messageListReceived = new ArrayList<>();
@@ -273,7 +269,6 @@ public class InboxActivity extends AppCompatActivity {
                             actualMessage.getInternalDate(),
                             InboxActivity.this.mUtils.getRandomMaterialColor()
                     ));
-                    messageCount++;
                 }
             } catch (Exception e) {
                 Log.w("MailBoxApp", e);
@@ -288,8 +283,7 @@ public class InboxActivity extends AppCompatActivity {
         protected void onPostExecute(List<Message> output) {
             if (output != null && output.size() != 0) {
                 InboxActivity.this.messageList.addAll(output);
-                InboxActivity.this.messagesAdapter.notifyItemRangeInserted(itemCount, messageCount);
-                itemCount += messageCount;
+                InboxActivity.this.messagesAdapter.notifyDataSetChanged();
                 InboxActivity.this.refreshMessages.setRefreshing(false);
             } else {
                 InboxActivity.this.refreshMessages.setRefreshing(false);
