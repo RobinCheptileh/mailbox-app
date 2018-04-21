@@ -34,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
     GoogleAccountCredential mCredential;
     SharedPreferences sharedPref;
 
+    public static final String TAG = "MailBoxApp";
     public static final String[] SCOPES = {GmailScopes.MAIL_GOOGLE_COM};
     public static final String PREF_ACCOUNT_NAME = "accountName";
 
@@ -107,7 +108,7 @@ public class MainActivity extends AppCompatActivity {
                             ActivityCompat.finishAffinity(MainActivity.this);
                         }
                     });
-                    AlertDialog dialog =builder.create();
+                    AlertDialog dialog = builder.create();
                     dialog.show();
                 } else {
                     chooseAccount();

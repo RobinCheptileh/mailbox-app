@@ -1,7 +1,6 @@
 package com.cognition.android.mailboxapp.utils;
 
 import android.content.Context;
-import android.graphics.drawable.ShapeDrawable;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.AppCompatTextView;
@@ -72,7 +71,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Messag
         holder.lytItemParent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mUtils.showSnackbar(MessagesAdapter.this.parent, message.getFrom());
+                mUtils.showSnackbar(MessagesAdapter.this.parent, message.getMimetype());
             }
         });
 

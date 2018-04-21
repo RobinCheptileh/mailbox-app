@@ -40,6 +40,8 @@ import com.google.api.client.util.ExponentialBackOff;
 import com.google.api.services.gmail.Gmail;
 import com.google.api.services.gmail.model.ListMessagesResponse;
 import com.google.api.services.gmail.model.MessagePartHeader;
+import com.raizlabs.android.dbflow.sql.language.Delete;
+import com.raizlabs.android.dbflow.sql.language.SQLite;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -53,6 +55,7 @@ import static com.cognition.android.mailboxapp.activities.MainActivity.PREF_ACCO
 import static com.cognition.android.mailboxapp.activities.MainActivity.REQUEST_AUTHORIZATION;
 import static com.cognition.android.mailboxapp.activities.MainActivity.REQUEST_GOOGLE_PLAY_SERVICES;
 import static com.cognition.android.mailboxapp.activities.MainActivity.SCOPES;
+import static com.cognition.android.mailboxapp.activities.MainActivity.TAG;
 
 public class InboxActivity extends AppCompatActivity {
 
@@ -106,7 +109,7 @@ public class InboxActivity extends AppCompatActivity {
         messagesAdapter = new MessagesAdapter(InboxActivity.this, messageList);
 
         initViews();
-        new GetEmailsTask().execute();
+        getMessagesFromDB();
     }
 
     /**
@@ -127,7 +130,7 @@ public class InboxActivity extends AppCompatActivity {
         switch (requestCode) {
             case REQUEST_AUTHORIZATION:
                 if (resultCode == RESULT_OK) {
-                    new GetEmailsTask().execute();
+                    getMessagesFromDB();
                 } else {
                     AlertDialog.Builder builder = new AlertDialog.Builder(InboxActivity.this);
                     builder.setMessage(R.string.app_requires_auth);
@@ -161,6 +164,9 @@ public class InboxActivity extends AppCompatActivity {
                 requestCode, permissions, grantResults, this);
     }
 
+    /**
+     * Initialize the views
+     */
     private void initViews() {
         lytParent = findViewById(R.id.lytParent);
         toolbar = findViewById(R.id.toolbar);
@@ -194,9 +200,10 @@ public class InboxActivity extends AppCompatActivity {
         refreshMessages.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                InboxActivity.this.pageToken = null;
-                InboxActivity.this.messageList.clear();
-                new GetEmailsTask().execute();
+                if (mUtils.isDeviceOnline()) {
+                    getMessagesFromDB();
+                } else
+                    mUtils.showSnackbar(lytParent, getString(R.string.device_is_offline));
             }
         });
 
@@ -230,20 +237,52 @@ public class InboxActivity extends AppCompatActivity {
         dialog.show();
     }
 
+    /**
+     * Get cached emails
+     */
+    private void getMessagesFromDB() {
+        InboxActivity.this.refreshMessages.setRefreshing(true);
+        InboxActivity.this.messageList.clear();
+        InboxActivity.this.messageList.addAll(SQLite.select().from(Message.class).queryList());
+        InboxActivity.this.messagesAdapter.notifyDataSetChanged();
+        InboxActivity.this.refreshMessages.setRefreshing(false);
+
+        if (mUtils.isDeviceOnline())
+            new GetEmailsTask(true).execute();
+        else
+            mUtils.showSnackbar(lytParent, getString(R.string.device_is_offline));
+    }
+
+    /**
+     * Get emails in the background
+     */
     @SuppressLint("StaticFieldLeak")
     private class GetEmailsTask extends AsyncTask<Void, Void, List<Message>> {
 
+        private int itemCount = 0;
+        private boolean clear;
         private Exception mLastError = null;
 
-        GetEmailsTask() {
+        GetEmailsTask(boolean clear) {
+            this.clear = clear;
         }
 
         @Override
         protected List<Message> doInBackground(Void... voids) {
+            if (clear) {
+                Delete.table(Message.class);
+                InboxActivity.this.pageToken = null;
+            }
+
             List<Message> messageListReceived = null;
 
             try {
-                InboxActivity.this.refreshMessages.setRefreshing(true);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        InboxActivity.this.refreshMessages.setRefreshing(true);
+                    }
+                });
                 String user = "me";
                 String query = "in:inbox";
                 ListMessagesResponse messageResponse = mService.users().messages().list(user).setQ(query).setMaxResults(12L).setPageToken(InboxActivity.this.pageToken).execute();
@@ -260,7 +299,7 @@ public class InboxActivity extends AppCompatActivity {
                                 messagePartHeader.getName(), messagePartHeader.getValue()
                         );
 
-                    messageListReceived.add(new Message(
+                    Message newMessage = new Message(
                             actualMessage.getLabelIds(),
                             actualMessage.getSnippet(),
                             actualMessage.getPayload().getMimeType(),
@@ -268,10 +307,15 @@ public class InboxActivity extends AppCompatActivity {
                             actualMessage.getPayload().getParts(),
                             actualMessage.getInternalDate(),
                             InboxActivity.this.mUtils.getRandomMaterialColor()
-                    ));
+                    );
+
+                    newMessage.save();
+                    messageListReceived.add(newMessage);
+
+                    itemCount++;
                 }
             } catch (Exception e) {
-                Log.w("MailBoxApp", e);
+                Log.w(TAG, e);
                 mLastError = e;
                 cancel(true);
             }
@@ -282,18 +326,41 @@ public class InboxActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(List<Message> output) {
             if (output != null && output.size() != 0) {
-                InboxActivity.this.messageList.addAll(output);
-                InboxActivity.this.messagesAdapter.notifyDataSetChanged();
-                InboxActivity.this.refreshMessages.setRefreshing(false);
+                if (clear) {
+                    InboxActivity.this.messageList.clear();
+                    InboxActivity.this.messageList.addAll(output);
+                    InboxActivity.this.messagesAdapter.notifyDataSetChanged();
+                } else {
+                    int listSize = InboxActivity.this.messageList.size();
+                    InboxActivity.this.messageList.addAll(output);
+                    InboxActivity.this.messagesAdapter.notifyItemRangeInserted(listSize, itemCount);
+                }
+
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        InboxActivity.this.refreshMessages.setRefreshing(false);
+                    }
+                });
             } else {
-                InboxActivity.this.refreshMessages.setRefreshing(false);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        InboxActivity.this.refreshMessages.setRefreshing(false);
+                    }
+                });
                 InboxActivity.this.mUtils.showSnackbar(lytParent, "Fetch failed");
             }
         }
 
         @Override
         protected void onCancelled() {
-            InboxActivity.this.refreshMessages.setRefreshing(false);
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    InboxActivity.this.refreshMessages.setRefreshing(false);
+                }
+            });
             if (mLastError != null) {
                 if (mLastError instanceof GooglePlayServicesAvailabilityIOException) {
                     showGooglePlayServicesAvailabilityErrorDialog(

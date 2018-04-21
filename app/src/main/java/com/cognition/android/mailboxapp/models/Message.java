@@ -1,52 +1,77 @@
 package com.cognition.android.mailboxapp.models;
 
 import com.google.api.services.gmail.model.MessagePart;
-import com.raizlabs.android.dbflow.annotation.Column;
+import com.raizlabs.android.dbflow.annotation.ColumnIgnore;
 import com.raizlabs.android.dbflow.annotation.PrimaryKey;
 import com.raizlabs.android.dbflow.annotation.Table;
 import com.raizlabs.android.dbflow.structure.BaseModel;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.List;
 import java.util.Map;
 
-@Table(database = AppDatabase.class)
+@Table(database = AppDatabase.class, allFields = true)
 public class Message extends BaseModel {
+
+    @PrimaryKey(autoincrement = true)
+    private int id;
+    private int message_id;
+    private String labelsJson;
+    private String snippet;
+    private String mimetype;
+    private String headersJson;
+    private String partsJson;
+    private String from;
+    private String subject;
+    private long timestamp;
+    private int color;
+
+    @ColumnIgnore
+    private List<String> labels;
+    @ColumnIgnore
+    private Map<String, String> headers;
+    @ColumnIgnore
+    private List<MessagePart> parts;
 
     public Message() {
     }
 
-    public Message(List<String> labels, String snippet, String mimetype, Map<String, String> headers, List<MessagePart> parts, long timestamp, int color) {
+    public Message(List<String> labels, String snippet, String mimetype, Map<String, String> headers, List<MessagePart> parts, long timestamp, int color) throws JSONException {
         this.labels = labels;
         this.snippet = snippet;
         this.mimetype = mimetype;
         this.headers = headers;
         this.parts = parts;
-
         this.timestamp = timestamp;
 
         this.from = this.headers.get("From");
         this.subject = this.headers.get("Subject");
         this.color = color;
-    }
 
-    @PrimaryKey(autoincrement = true)
-    private int id;
-    @Column
-    private int message_id;
-    private List<String> labels;
-    @Column
-    private String snippet;
-    @Column
-    private String mimetype;
-    private Map<String, String> headers;
-    private List<MessagePart> parts;
-    @Column
-    private String from;
-    @Column
-    private String subject;
-    @Column
-    private long timestamp;
-    private int color;
+        if (this.labels != null) {
+            JSONArray labelsArr = new JSONArray();
+            for (String label : this.labels)
+                labelsArr.put(label);
+            this.labelsJson = labelsArr.toString();
+        }
+
+        if (this.headers != null) {
+            JSONObject headersObj = new JSONObject();
+            for (Map.Entry<String, String> header : this.headers.entrySet())
+                headersObj.put(header.getKey(), header.getValue());
+            this.headersJson = headersObj.toString();
+        }
+
+        if (this.parts != null) {
+            JSONArray partsArr = new JSONArray();
+            for (MessagePart messagePart : this.parts)
+                partsArr.put(messagePart.toString());
+            this.partsJson = partsArr.toString();
+        }
+    }
 
     public int getId() {
         return id;
@@ -134,5 +159,29 @@ public class Message extends BaseModel {
 
     public void setColor(int color) {
         this.color = color;
+    }
+
+    public String getLabelsJson() {
+        return labelsJson;
+    }
+
+    public void setLabelsJson(String labelsJson) {
+        this.labelsJson = labelsJson;
+    }
+
+    public String getHeadersJson() {
+        return headersJson;
+    }
+
+    public void setHeadersJson(String headersJson) {
+        this.headersJson = headersJson;
+    }
+
+    public String getPartsJson() {
+        return partsJson;
+    }
+
+    public void setPartsJson(String partsJson) {
+        this.partsJson = partsJson;
     }
 }
