@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorBackgroundGrey"
-    tools:context=".MainActivity">
+    tools:context=".activities.MainActivity">
 
     <android.support.v7.widget.LinearLayoutCompat
         android:layout_width="wrap_content"
@@ -21,8 +21,8 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <android.support.v7.widget.AppCompatImageView
-            android:layout_width="80dp"
-            android:layout_height="80dp"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
             android:layout_gravity="center"
             android:src="@drawable/ic_gmail" />
 

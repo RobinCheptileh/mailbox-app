@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">MailBox App</string>
     <string name="choose_account">Choose Account</string>
+    <string name="preferences_file_name">com.cognition.android.mailboxapp.PREFERENCES_FILE</string>
+    <string name="this_app_requires_google_play_services">This app requires Google Play Services. Please install Google Play Services on your device and relaunch this app.</string>
+    <string name="inbox">Inbox</string>
 </resources>
