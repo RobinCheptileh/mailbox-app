@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">MailBox App</string>
+    <string name="choose_account">Choose Account</string>
+</resources>
