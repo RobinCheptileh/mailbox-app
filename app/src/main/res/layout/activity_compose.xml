@@ -85,7 +85,6 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:fontFamily="sans-serif"
-                    android:inputType="textEmailAddress|textWebEmailAddress"
                     android:text="@string/to"
                     android:textColor="@color/colorGreyText"
                     android:textSize="15sp"
@@ -101,6 +100,7 @@
                     android:background="@android:color/transparent"
                     android:fontFamily="sans-serif"
                     android:hint="@string/to"
+                    android:inputType="textEmailAddress"
                     android:textColor="@color/colorBlackText"
                     android:textSize="15sp"
                     tools:targetApi="jelly_bean" />
