@@ -23,4 +23,5 @@
     <string name="empty_fields">Some fields are empty</string>
     <string name="sending">Sending…</string>
     <string name="fetch_failed">Fetch failed</string>
+    <string name="invalid_email">Invalid email address</string>
 </resources>

@@ -12,6 +12,7 @@ import android.view.View;
 import java.util.Calendar;
 import java.util.Locale;
 import java.util.Random;
+import java.util.regex.Pattern;
 
 public class Utils {
 
@@ -65,9 +66,26 @@ public class Utils {
         return returnColor;
     }
 
+    /**
+     * Convert timestamp to date string dd/MM/yyyy
+     *
+     * @param time long
+     * @return String
+     */
     public String timestampToDate(long time) {
         Calendar cal = Calendar.getInstance(Locale.ENGLISH);
         cal.setTimeInMillis(time);
         return DateFormat.format("dd/MM/yyyy", cal).toString();
+    }
+
+    /**
+     * Validates email addresses
+     *
+     * @param email String
+     * @return boolean
+     */
+    public boolean isValidEmail(String email) {
+        final String EMAIL_PATTERN = "^[a-zA-Z0-9#_~!$&'()*+,;=:.\"(),:;<>@\\[\\]\\\\]+@[a-zA-Z0-9-]+(\\.[a-zA-Z0-9-]+)*$";
+        return Pattern.compile(EMAIL_PATTERN).matcher(email).matches();
     }
 }

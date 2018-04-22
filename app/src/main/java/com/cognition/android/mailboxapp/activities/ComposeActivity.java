@@ -195,20 +195,23 @@ public class ComposeActivity extends AppCompatActivity {
         if (!txtTo.getText().toString().trim().isEmpty()
                 && !txtSubject.getText().toString().trim().isEmpty()
                 && !txtMessage.getText().toString().trim().isEmpty()) {
-            if (!isSending)
-                try {
-                    new SendEmailTask(
-                            createEmail(
-                                    txtTo.getText().toString().trim(),
-                                    mCredential.getSelectedAccountName(),
-                                    txtSubject.getText().toString().trim(),
-                                    txtMessage.getText().toString().trim()
-                            )
-                    ).execute();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    Log.w(MainActivity.TAG, e);
-                }
+            if (mUtils.isValidEmail(txtTo.getText().toString().trim()))
+                if (!isSending)
+                    try {
+                        new SendEmailTask(
+                                createEmail(
+                                        txtTo.getText().toString().trim(),
+                                        mCredential.getSelectedAccountName(),
+                                        txtSubject.getText().toString().trim(),
+                                        txtMessage.getText().toString().trim()
+                                )
+                        ).execute();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        Log.w(MainActivity.TAG, e);
+                    }
+                else
+                    mUtils.showSnackbar(lytParent, getString(R.string.invalid_email));
         } else
             mUtils.showSnackbar(lytParent, getString(R.string.empty_fields));
     }
