@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/lytParent"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".activities.ComposeActivity"
+    tools:targetApi="jelly_bean">
+
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fitsSystemWindows="true"
+        android:theme="@style/ToolbarTheme">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/colorPrimary"
+            android:theme="@style/ToolbarTheme"
+            app:navigationIcon="@drawable/ic_arrow_back_white_24dp"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+            app:title="@string/compose" />
+
+    </android.support.design.widget.AppBarLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <android.support.v7.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <android.support.v7.widget.LinearLayoutCompat
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="16dp">
+
+                <android.support.v7.widget.AppCompatTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:fontFamily="sans-serif"
+                    android:text="@string/from"
+                    android:textColor="@color/colorGreyText"
+                    android:textSize="15sp"
+                    tools:targetApi="jelly_bean" />
+
+                <android.support.v7.widget.AppCompatTextView
+                    android:id="@+id/txtFrom"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="24dp"
+                    android:layout_marginStart="24dp"
+                    android:fontFamily="sans-serif"
+                    android:text="@string/from"
+                    android:textColor="@color/colorBlackText"
+                    android:textSize="15sp"
+                    tools:targetApi="jelly_bean" />
+
+            </android.support.v7.widget.LinearLayoutCompat>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:alpha="0.1"
+                android:background="@android:color/black" />
+
+            <android.support.v7.widget.LinearLayoutCompat
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="16dp">
+
+                <android.support.v7.widget.AppCompatTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:fontFamily="sans-serif"
+                    android:text="@string/to"
+                    android:textColor="@color/colorGreyText"
+                    android:textSize="15sp"
+                    tools:targetApi="jelly_bean" />
+
+                <android.support.v7.widget.AppCompatEditText
+                    android:id="@+id/txtTo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="24dp"
+                    android:layout_marginStart="24dp"
+                    android:background="@android:color/transparent"
+                    android:fontFamily="sans-serif"
+                    android:hint="@string/to"
+                    android:textColor="@color/colorBlackText"
+                    android:textSize="15sp"
+                    tools:targetApi="jelly_bean" />
+
+            </android.support.v7.widget.LinearLayoutCompat>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:alpha="0.1"
+                android:background="@android:color/black" />
+
+            <android.support.v7.widget.AppCompatEditText
+                android:id="@+id/txtSubject"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@android:color/transparent"
+                android:fontFamily="sans-serif"
+                android:hint="@string/subject"
+                android:padding="16dp"
+                android:textColor="@color/colorBlackText"
+                android:textSize="15sp"
+                tools:targetApi="jelly_bean" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:alpha="0.1"
+                android:background="@android:color/black" />
+
+            <android.support.v7.widget.AppCompatEditText
+                android:id="@+id/txtMessage"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@android:color/transparent"
+                android:fontFamily="sans-serif"
+                android:hint="@string/compose_email"
+                android:padding="16dp"
+                android:textColor="@color/colorBlackText"
+                android:textSize="15sp"
+                tools:targetApi="jelly_bean" />
+
+        </android.support.v7.widget.LinearLayoutCompat>
+
+    </ScrollView>
+
+</android.support.design.widget.CoordinatorLayout>

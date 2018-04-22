@@ -15,4 +15,12 @@
     <string name="to_me">to me</string>
     <string name="an_error_occurred">An error occurred.</string>
     <string name="retry">Retry</string>
+    <string name="send">Send</string>
+    <string name="to">To</string>
+    <string name="compose_email">Compose email</string>
+    <string name="compose">Compose</string>
+    <string name="message_sent">Message sent</string>
+    <string name="empty_fields">Some fields are empty</string>
+    <string name="sending">Sending…</string>
+    <string name="fetch_failed">Fetch failed</string>
 </resources>

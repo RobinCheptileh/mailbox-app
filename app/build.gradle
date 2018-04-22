@@ -37,6 +37,8 @@ dependencies {
     implementation('com.google.apis:google-api-services-gmail:v1-rev83-1.23.0') {
         exclude group: 'org.apache.httpcomponents'
     }
+    implementation 'com.sun.mail:android-mail:1.6.0'
+    implementation 'com.sun.mail:android-activation:1.6.0'
 
     // DBFlow
     annotationProcessor "com.github.Raizlabs.DBFlow:dbflow-processor:4.2.4"

@@ -26,6 +26,7 @@
             android:name=".activities.InboxActivity"
             android:theme="@style/AppTheme.Launcher" />
         <activity android:name=".activities.EmailActivity" />
+        <activity android:name=".activities.ComposeActivity"></activity>
     </application>
 
 </manifest>

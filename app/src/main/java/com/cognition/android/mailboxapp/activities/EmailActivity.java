@@ -71,6 +71,9 @@ public class EmailActivity extends AppCompatActivity {
             onBackPressed();
     }
 
+    /**
+     * Initialize views
+     */
     @SuppressLint("SetJavaScriptEnabled")
     private void initViews() {
         lytParent = findViewById(R.id.lytParent);
@@ -198,6 +201,9 @@ public class EmailActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Prepare the webview to display the email
+     */
     private void setUpWebView() {
         TransitionManager.beginDelayedTransition(lytParent);
         myWebView.setVisibility(View.GONE);
@@ -238,6 +244,14 @@ public class EmailActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Get email data
+     *
+     * @param parts JSONArray
+     * @return String[]
+     * @throws JSONException                JSONException
+     * @throws UnsupportedEncodingException UnsupportedEncodingException
+     */
     private String[] getData(JSONArray parts) throws JSONException, UnsupportedEncodingException {
         for (int i = 0; i < parts.length(); i++) {
             JSONObject part = new JSONObject(parts.getString(i));

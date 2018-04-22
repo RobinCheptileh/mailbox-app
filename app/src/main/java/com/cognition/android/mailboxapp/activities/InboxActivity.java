@@ -179,11 +179,11 @@ public class InboxActivity extends AppCompatActivity {
         listMessages = findViewById(R.id.listMessages);
         fabCompose = findViewById(R.id.fabCompose);
 
-        toolbar.inflateMenu(R.menu.menu_main);
+        toolbar.inflateMenu(R.menu.menu_inbox);
 
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         SearchView searchView = (SearchView) toolbar.getMenu().findItem(R.id.action_search).getActionView();
-        searchView.setQueryHint("Search");
+        searchView.setQueryHint(getString(R.string.search));
         searchView.setSearchableInfo(searchManager != null ? searchManager.getSearchableInfo(getComponentName()) : null);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -227,7 +227,7 @@ public class InboxActivity extends AppCompatActivity {
         fabCompose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mUtils.showSnackbar(lytParent, "Compose");
+                startActivity(new Intent(InboxActivity.this, ComposeActivity.class));
             }
         });
     }
@@ -365,7 +365,7 @@ public class InboxActivity extends AppCompatActivity {
                         InboxActivity.this.refreshMessages.setRefreshing(false);
                     }
                 });
-                InboxActivity.this.mUtils.showSnackbar(lytParent, "Fetch failed");
+                InboxActivity.this.mUtils.showSnackbar(lytParent, getString(R.string.fetch_failed));
             }
         }
 
@@ -389,10 +389,10 @@ public class InboxActivity extends AppCompatActivity {
                             ((UserRecoverableAuthIOException) mLastError).getIntent(),
                             REQUEST_AUTHORIZATION);
                 } else {
-                    mUtils.showSnackbar(lytParent, "An error occurred, try again");
+                    mUtils.showSnackbar(lytParent, getString(R.string.an_error_occurred));
                 }
             } else {
-                mUtils.showSnackbar(lytParent, "An error occurred, try again");
+                mUtils.showSnackbar(lytParent, getString(R.string.an_error_occurred));
             }
         }
 
