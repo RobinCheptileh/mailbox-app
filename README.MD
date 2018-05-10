@@ -1,6 +1,6 @@
 # MailBox App
 
-![Logo](app/src/main/res/drawable-mhdpi/ic_launcher_high_res.png)
+![Logo](app/src/main/res/drawable-mdpi/ic_launcher_high_res.png)
 
 #
 
